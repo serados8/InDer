@@ -1,13 +1,16 @@
 {
   "expo": {
     "name": "InDer",
-    "slug": "InDer",
+    "slug": "inder",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "infoPlist": {
+        "CFBundleLocalizations": ["id"]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -20,6 +23,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-sqlite",
+      "expo-notifications",
+      "@react-native-community/datetimepicker"
+    ]
   }
 }
