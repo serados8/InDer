@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNow } from '../hooks/useNow';
 import { FlatList, ScrollView, Text, View, Pressable } from 'react-native';
 import { NoteFilter, NoteWithReminder } from '../models/Note';
 import { filterNotes } from '../services/NoteService';
@@ -20,15 +21,16 @@ const filters: NoteFilter[] = ['Semua', 'Belum selesai', 'Selesai', 'Memiliki re
 
 export function HomeScreen({ notes, onOpen, onCreate, onSettings }: HomeScreenProps) {
   const [query, setQuery] = useState('');
+  const now = useNow();
   const [filter, setFilter] = useState<NoteFilter>('Semua');
   const upcoming = notes.filter(note => note.Reminder?.IsActive
-    && new Date(note.Reminder.ReminderDateTime).getTime() > Date.now())
+    && new Date(note.Reminder.ReminderDateTime).getTime() > now)
     .sort((a, b) => a.Reminder!.ReminderDateTime.localeCompare(b.Reminder!.ReminderDateTime));
   const visible = filterNotes(notes, query, filter);
   return <View style={styles.page}>
     <FlatList data={visible} keyExtractor={note => String(note.Id)} contentContainerStyle={styles.content}
       ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
-      renderItem={({ item }) => <NoteCard note={item} onPress={() => onOpen(item.Id)} />}
+      renderItem={({ item }) => <NoteCard note={item} now={now} onPress={() => onOpen(item.Id)} />}
       ListHeaderComponent={<View style={{ gap: 24, paddingBottom: 18 }}>
         <View style={styles.row}>
           <View><Text style={styles.title}>InDer<Text style={{ color: colors.primary }}>.</Text></Text>

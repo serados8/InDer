@@ -4,7 +4,7 @@ import { colors, styles } from '../constants/Theme';
 import { formatDate } from '../utils/DateUtils';
 import { StatusBadge } from './StatusBadge';
 
-export function NoteCard({ note, onPress }: { note: NoteWithReminder; onPress: () => void }) {
+export function NoteCard({ note, now, onPress }: { note: NoteWithReminder; now: number; onPress: () => void }) {
   return <Pressable accessibilityRole="button" accessibilityLabel={`Buka catatan ${note.Title}`} onPress={onPress}
     style={[styles.card, note.IsCompleted && { backgroundColor: '#F0F8F3' }]}>
     <View style={styles.row}>
@@ -13,7 +13,7 @@ export function NoteCard({ note, onPress }: { note: NoteWithReminder; onPress: (
     </View>
     {!!note.Content && <Text numberOfLines={2} style={styles.muted}>{note.Content}</Text>}
     <StatusBadge label={note.IsCompleted ? '✓ Selesai' : 'Belum selesai'} />
-    {note.Reminder && <StatusBadge reminder label={`${new Date(note.Reminder.ReminderDateTime).getTime() <= Date.now()
+    {note.Reminder && <StatusBadge reminder label={`${new Date(note.Reminder.ReminderDateTime).getTime() <= now
       ? 'Terlewat' : 'Pengingat'} · ${formatDate(note.Reminder.ReminderDateTime)}`} />}
   </Pressable>;
 }

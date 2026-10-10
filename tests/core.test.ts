@@ -13,6 +13,7 @@ let db = new DatabaseSync(filename);
 let permitted = true;
 let failSchedule = false;
 let failWrite = false;
+let dropSchedule = false;
 const pending = new Map();
 const events: string[] = [];
 const adapter = {
@@ -31,6 +32,7 @@ const adapter = {
   },
 };
 const notifications = {
+  async getAllScheduledNotificationsAsync() { return [...pending.values()]; },
   setNotificationHandler() {},
   IosAuthorizationStatus: { PROVISIONAL: 3 },
   SchedulableTriggerInputTypes: { DATE: 'date' },
@@ -40,6 +42,7 @@ const notifications = {
   async scheduleNotificationAsync(request: { identifier: string; content: { title: string }; trigger: { date: Date } }) {
     events.push('schedule');
     if (failSchedule) { failSchedule = false; throw new Error('Simulated scheduling failure'); }
+    if (dropSchedule) { dropSchedule = false; return request.identifier; }
     pending.set(request.identifier, request);
     return request.identifier;
   },
@@ -63,6 +66,22 @@ const { NoteService, filterNotes } = require('../src/services/NoteService.ts');
 const { ReminderService } = require('../src/services/ReminderService.ts');
 const { ReminderRepository } = require('../src/database/ReminderRepository.ts');
 const { NoteRepository } = require('../src/database/NoteRepository.ts');
+const { NotificationService } = require('../src/services/NotificationService.ts');
+const { mergePickerDate } = require('../src/utils/DateUtils.ts');
+
+test('pemilih jam mempertahankan tanggal dan pemilih tanggal mempertahankan jam', () => {
+  const current = new Date(2026, 9, 20, 15, 30, 45);
+  const selected = new Date(2026, 9, 10, 9, 10);
+  const time = mergePickerDate(current, selected, 'time');
+  assert.equal(time.getDate(), 20);
+  assert.equal(time.getHours(), 9);
+  assert.equal(time.getMinutes(), 10);
+  assert.equal(time.getSeconds(), 0);
+  const date = mergePickerDate(current, selected, 'date');
+  assert.equal(date.getDate(), 10);
+  assert.equal(date.getHours(), 15);
+  assert.equal(date.getMinutes(), 30);
+});
 
 test('Alur catatan dan pengingat dengan SQLite nyata', async (t: import('node:test').TestContext) => {
   let id = 0;
@@ -94,12 +113,29 @@ test('Alur catatan dan pengingat dengan SQLite nyata', async (t: import('node:te
   await t.test('membuat dan mengganti satu pengingat', async () => {
     await ReminderService.save(id, future);
     assert.equal(pending.size, 1);
+    assert.equal(await NotificationService.isScheduled(id), true);
     assert.equal(pending.get(`inder-note-${id}`).content.title, 'Tugas RPL');
     events.length = 0;
     await ReminderService.save(id, new Date(future.getTime() + 60000));
     assert.deepEqual(events, ['cancel', 'schedule']);
     assert.equal((await ReminderRepository.list()).length, 1);
     assert.equal(filterNotes(await NoteService.list(), '', 'Memiliki reminder').length, 1);
+  });
+  await t.test('jadwal yang tidak masuk antrean tidak dianggap berhasil', async () => {
+    const previous = await ReminderRepository.get(id);
+    dropSchedule = true;
+    await assert.rejects(ReminderService.save(id, future), /gagal disimpan/);
+    assert.deepEqual(await ReminderRepository.get(id), previous);
+    assert.equal(pending.get(`inder-note-${id}`).trigger.date.toISOString(), previous.ReminderDateTime);
+  });
+  await t.test('uji 10 detik memakai jadwal terpisah dari pengingat catatan', async () => {
+    const before = Date.now();
+    await NotificationService.test();
+    const request = pending.get('inder-test');
+    assert.ok(request.trigger.date.getTime() >= before + 10000);
+    assert.equal(request.trigger.channelId, undefined);
+    assert.ok(pending.has(`inder-note-${id}`));
+    await notifications.cancelScheduledNotificationAsync('inder-test');
   });
   await t.test('kegagalan penjadwalan dan penyimpanan memulihkan pengingat lama', async () => {
     const previous = await ReminderRepository.get(id);
@@ -137,6 +173,7 @@ test('Alur catatan dan pengingat dengan SQLite nyata', async (t: import('node:te
     await ReminderService.delete(id);
     assert.equal(pending.size, 0);
     assert.equal(await ReminderRepository.get(id), null);
+    assert.equal(await NotificationService.isScheduled(id), false);
   });
   await t.test('hapus catatan menghapus pengingat dan notifikasi', async () => {
     await ReminderService.save(id, future);

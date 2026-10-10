@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, AppState, BackHandler, Modal, Platform, Text, View } from 'react-native';
 import { NoteWithReminder } from '../models/Note';
 import { NoteService } from '../services/NoteService';
@@ -25,7 +25,10 @@ export function AppNavigator() {
   const locked = useRef(false);
   const selected = 'id' in route ? notes.find(note => note.Id === route.id) : undefined;
 
-  async function refresh() { setNotes(await NoteService.list()); }
+  const refresh = useCallback(async () => {
+    const storedNotes = await NoteService.list();
+    setNotes(storedNotes);
+  }, []);
   async function initialize() {
     setLoading(true);
     setError('');
@@ -34,22 +37,23 @@ export function AppNavigator() {
     finally { setLoading(false); }
   }
   useEffect(() => {
-    void initialize();
+    void NoteService.list().then(setNotes).catch(reason => setError(reason instanceof Error ? reason.message : 'Operasi database gagal.'))
+      .finally(() => setLoading(false));
     const listener = AppState.addEventListener('change', state => {
       if (state === 'active') void refresh().catch(() => setError('Operasi database gagal. Silakan coba lagi.'));
     });
     return () => listener.remove();
-  }, []);
+  }, [refresh]);
   useEffect(() => {
     if (!message) return;
     const timer = setTimeout(() => setMessage(''), 4500);
     return () => clearTimeout(timer);
   }, [message]);
-  function back() {
+  const back = useCallback(() => {
     if (locked.current) return;
     if ((route.name === 'edit' || route.name === 'reminder') && selected) setRoute({ name: 'detail', id: selected.Id });
     else setRoute({ name: 'home' });
-  }
+  }, [route, selected]);
   useEffect(() => {
     const listener = BackHandler.addEventListener('hardwareBackPress', () => {
       if (route.name === 'home') return false;
@@ -57,7 +61,7 @@ export function AppNavigator() {
       return true;
     });
     return () => listener.remove();
-  }, [route]);
+  }, [route, back]);
 
   async function run(action: () => Promise<void>, success: string) {
     if (locked.current) return;

@@ -91,6 +91,8 @@ Pratinjau web menggunakan SQLite browser melalui WASM. Metro dikonfigurasi denga
 
 ## Pengujian dan kriteria keberhasilan
 
+Jika notifikasi tidak muncul di iPhone, buka **Pengaturan → Uji Notifikasi 10 Detik**, lalu kembali ke layar utama iPhone tanpa menutup paksa Expo Go. Halaman Pengaturan menampilkan jumlah pengingat dalam antrean perangkat serta izin banner, suara, dan layar terkunci. Coba juga uji sambil tetap di halaman Pengaturan: pesan penerimaan membantu membedakan notifikasi yang diterima aplikasi dari banner yang tidak ditampilkan iOS. Periksa pengaturan notifikasi **Expo Go**, Fokus, dan Ringkasan Terjadwal pada iPhone. Setelah memperbarui paket, hentikan Metro lalu jalankan `npx expo start --clear`. Edit dan simpan ulang pengingat untuk waktu mendatang jika jadwal lamanya tidak ada dalam antrean.
+
 `npm test` menjalankan layanan dan query repository yang sebenarnya melalui adapter SQLite Node pada file sementara. API notifikasi diganti simulasi untuk menguji isi, urutan pembatalan, dan kegagalan. Pengujian ini tidak membuktikan notifikasi benar-benar muncul di iOS.
 
 Uji penerimaan pada iPhone:

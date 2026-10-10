@@ -5,9 +5,9 @@
   "dependencies": {
     "@expo/metro-runtime": "~57.0.16",
     "@react-native-community/datetimepicker": "9.1.0",
-    "expo": "~57.0.26",
-    "expo-notifications": "~57.0.21",
-    "expo-sqlite": "~57.0.3",
+    "expo": "~57.0.27",
+    "expo-notifications": "~57.0.22",
+    "expo-sqlite": "~57.0.4",
     "expo-status-bar": "~57.0.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",
@@ -18,6 +18,8 @@
   "devDependencies": {
     "@types/node": "^22.20.4",
     "@types/react": "~19.2.2",
+    "eslint": "^9.0.0",
+    "eslint-config-expo": "~57.0.2",
     "typescript": "~6.0.3"
   },
   "scripts": {
@@ -27,7 +29,8 @@
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test tests/*.test.ts",
-    "build": "expo export --platform ios --platform android --platform web"
+    "build": "expo export --platform ios --platform android --platform web",
+    "lint": "expo lint"
   },
   "private": true
 }
