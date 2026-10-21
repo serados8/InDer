@@ -1,0 +1,12 @@
+﻿
+> inder@1.0.0 start
+> expo start --offline --port 8091
+
+Networking has been disabled
+Starting project at C:\Users\Muhammad Ridho H\Desktop\InDer
+Starting Metro Bundler
+
+Waiting on http://localhost:8091
+
+Logs for your project will appear below.
+
