@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNow } from '../hooks/useNow';
 import { FlatList, ScrollView, Text, View, Pressable } from 'react-native';
 import { NoteFilter, NoteWithReminder } from '../models/Note';
-import { filterNotes } from '../services/NoteService';
+import { filterNotes, getUpcomingNotes } from '../services/NoteService';
 import { colors, styles } from '../constants/Theme';
 import { Button } from '../components/Button';
 import { SearchBar } from '../components/SearchBar';
@@ -23,9 +23,7 @@ export function HomeScreen({ notes, onOpen, onCreate, onSettings }: HomeScreenPr
   const [query, setQuery] = useState('');
   const now = useNow();
   const [filter, setFilter] = useState<NoteFilter>('Semua');
-  const upcoming = notes.filter(note => note.Reminder?.IsActive
-    && new Date(note.Reminder.ReminderDateTime).getTime() > now)
-    .sort((a, b) => a.Reminder!.ReminderDateTime.localeCompare(b.Reminder!.ReminderDateTime));
+  const upcoming = getUpcomingNotes(notes, now);
   const visible = filterNotes(notes, query, filter);
   return <View style={styles.page}>
     <FlatList data={visible} keyExtractor={note => String(note.Id)} contentContainerStyle={styles.content}

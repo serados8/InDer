@@ -1,19 +1,12 @@
 import { NoteRepository } from '../database/NoteRepository';
 import { ReminderRepository } from '../database/ReminderRepository';
-import { NoteFilter, NoteWithReminder } from '../models/Note';
-import { validateTitle } from '../utils/ValidationUtils';
+import { NoteWithReminder } from '../models/Note';
+import { prepareNoteInput } from './NoteRules';
+import { isUpcomingReminder } from './ReminderRules';
 import { NotificationService } from './NotificationService';
 
-export function filterNotes(notes: NoteWithReminder[], query: string, filter: NoteFilter) {
-  const search = query.trim().toLocaleLowerCase('id-ID');
-  return notes.filter(note => {
-    const matches = `${note.Title} ${note.Content}`.toLocaleLowerCase('id-ID').includes(search);
-    return matches && (filter === 'Semua'
-      || (filter === 'Selesai' && note.IsCompleted)
-      || (filter === 'Belum selesai' && !note.IsCompleted)
-      || (filter === 'Memiliki reminder' && note.Reminder !== null));
-  });
-}
+export { filterNotes } from './NoteRules';
+export { getUpcomingNotes } from './ReminderRules';
 
 export const NoteService = {
   async list(): Promise<NoteWithReminder[]> {
@@ -22,21 +15,21 @@ export const NoteService = {
     return notes.map(note => ({ ...note, Reminder: reminders.find(item => item.NoteId === note.Id) ?? null }));
   },
   async save(title: string, content: string, id?: number) {
-    validateTitle(title);
+    const input = prepareNoteInput(title, content);
     if (id === undefined) {
-      try { return await NoteRepository.create(title.trim(), content.trim()); }
+      try { return await NoteRepository.create(input.Title, input.Content); }
       catch { throw new Error('Catatan gagal disimpan.'); }
     }
     const previous = await NoteRepository.get(id);
     const reminder = await ReminderRepository.get(id);
-    const active = reminder?.IsActive && new Date(reminder.ReminderDateTime).getTime() > Date.now();
+    const active = isUpcomingReminder(reminder);
     try {
       if (active) {
         await NotificationService.cancel(id);
-        await NotificationService.schedule({ ...previous, Title: title.trim(), Content: content.trim() },
+        await NotificationService.schedule({ ...previous, ...input },
           new Date(reminder.ReminderDateTime));
       }
-      await NoteRepository.update(id, title.trim(), content.trim());
+      await NoteRepository.update(id, input.Title, input.Content);
       return id;
     } catch {
       if (active) {
@@ -58,7 +51,7 @@ export const NoteService = {
       await NotificationService.cancel(id);
       await NoteRepository.delete(id);
     } catch {
-      if (reminder?.IsActive && new Date(reminder.ReminderDateTime).getTime() > Date.now()) {
+      if (isUpcomingReminder(reminder)) {
         await NotificationService.schedule(note, new Date(reminder.ReminderDateTime));
       }
       throw new Error('Catatan gagal dihapus.');

@@ -4,9 +4,10 @@ import { Note } from '../models/Note';
 import { Reminder } from '../models/Reminder';
 import { validateReminderDate } from '../utils/ValidationUtils';
 import { NotificationService } from './NotificationService';
+import { isUpcomingReminder } from './ReminderRules';
 
 async function restore(note: Note, previous: Reminder | null) {
-  if (previous?.IsActive && new Date(previous.ReminderDateTime).getTime() > Date.now()) {
+  if (isUpcomingReminder(previous)) {
     await NotificationService.schedule(note, new Date(previous.ReminderDateTime));
   }
 }
