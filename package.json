@@ -28,7 +28,9 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "test": "node --experimental-strip-types --test tests/*.test.ts tests/unit/*.test.ts",
+    "test:unit": "node --experimental-strip-types --test tests/unit/*.test.ts tests/note-validation.test.ts tests/reminder-validation.test.ts",
+    "test:integration": "node --experimental-strip-types --test tests/core.test.ts",
     "build": "expo export --platform ios --platform android --platform web",
     "lint": "expo lint"
   },
