@@ -14,16 +14,17 @@ InDer adalah aplikasi catatan dan pengingat sederhana untuk mahasiswa, dibuat un
 
 ## Teknologi dan struktur
 
-React Native 0.86, TypeScript, Expo SDK 57, Expo SQLite, Expo Notifications, date/time picker bawaan perangkat, dan safe area. Navigasi sederhana memakai state React; tidak memerlukan pustaka navigasi tambahan.
+React Native 0.86, TypeScript, Expo SDK 57, Expo SQLite, Expo Notifications, date/time picker bawaan perangkat, dan safe area. Navigasi menggunakan Expo Router dengan route di src/app dan state bersama di src/state.
 
 ```text
-App.tsx
+src/app/_layout.tsx
 src/
   components/     Tombol, kartu, badge, pencarian, dan pemilih waktu
   constants/      Warna dan gaya bersama
   database/       Inisialisasi, skema, dan repository SQLite
   models/         Note dan Reminder (satu definisi masing-masing)
-  navigation/     Navigasi dan koordinasi tindakan pengguna
+  app/            Route Expo Router dan layout
+  state/          State bersama, loading, pesan, dan konfirmasi
   screens/        Home, formulir catatan, detail, pengingat, pengaturan
   services/       Aturan catatan, pengingat, dan notifikasi
   utils/          Format tanggal dan validasi
@@ -43,7 +44,7 @@ Alur: **UI → Service → Repository → SQLite**. Formulir buat dan edit mengg
 
 ```powershell
 cd "C:\Users\Muhammad Ridho H\Desktop\InDer"
-npm install
+npm ci
 npx expo start
 ```
 
@@ -118,8 +119,15 @@ Tidak ada autentikasi, registrasi, backend, cloud database, sinkronisasi, integr
 
 ## Referensi
 
-Verifikasi pengembangan: TypeScript lulus, 10 skenario integrasi lulus, ekspor iOS/Android/web berhasil, dan Metro berhasil dimulai. Pemeriksaan visual dan pengiriman notifikasi pada iPhone belum dijalankan di lingkungan pengembangan ini. `npm audit` masih melaporkan advisory tingkat sedang dalam dependensi transitif Expo, termasuk `xcode → uuid`; versi SDK dijaga kompatibel tanpa pemaksaan pembaruan mayor.
+Verifikasi final P7: 34 unit test dan 57 hasil test keseluruhan PASSED, lint/typecheck lulus, ekspor iOS/Android/web berhasil, serta Expo Doctor 21/21. Mahasiswa mengonfirmasi pengingat iPhone berhasil sebelum migrasi navigasi final. Pemeriksaan UI versi final dan video demo masih perlu diselesaikan mahasiswa. API notifikasi disimulasikan pada test otomatis.
 
 - [Expo SQLite](https://docs.expo.dev/versions/latest/sdk/sqlite/)
 - [Expo Notifications dan dukungan notifikasi lokal Expo Go](https://docs.expo.dev/versions/latest/sdk/notifications/)
 - [Expo Go](https://expo.dev/go)
+
+## Pengumpulan pertemuan 7
+
+- [Petunjuk menjalankan](HowToRun.md)
+- [Checklist fitur dan bukti pengujian](checklist_mvp.md)
+- [Panduan rekaman demo iPhone](docs/pertemuan-7/DEMO.md)
+- Video akhir: `demo.mp4`, direkam mahasiswa dan belum tersedia.

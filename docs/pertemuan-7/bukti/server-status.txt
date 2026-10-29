@@ -1,0 +1,3 @@
+﻿Metro status: 200 packager-status:running
+Web entry HTTP: 200 (checked separately)
+Scope: HTTP smoke check only; does not verify rendered UI or native notifications.

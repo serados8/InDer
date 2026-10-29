@@ -14,6 +14,8 @@ let permitted = true;
 let failSchedule = false;
 let failWrite = false;
 let dropSchedule = false;
+let failCancel = false;
+let failRead = false;
 const pending = new Map();
 const events: string[] = [];
 const adapter = {
@@ -24,7 +26,10 @@ const adapter = {
     return { changes: Number(result.changes), lastInsertRowId: Number(result.lastInsertRowid) };
   },
   async getFirstAsync(sql: string, ...params: (string | number)[]) { return db.prepare(sql).get(...params) ?? null; },
-  async getAllAsync(sql: string, ...params: (string | number)[]) { return db.prepare(sql).all(...params); },
+  async getAllAsync(sql: string, ...params: (string | number)[]) {
+    if (failRead) { failRead = false; throw new Error('Simulated read failure'); }
+    return db.prepare(sql).all(...params);
+  },
   async withTransactionAsync(action: () => Promise<void>) {
     db.exec('BEGIN');
     try { await action(); db.exec('COMMIT'); }
@@ -38,7 +43,11 @@ const notifications = {
   SchedulableTriggerInputTypes: { DATE: 'date' },
   async getPermissionsAsync() { return { granted: permitted }; },
   async requestPermissionsAsync() { return { granted: permitted }; },
-  async cancelScheduledNotificationAsync(id: string) { events.push('cancel'); pending.delete(id); },
+  async cancelScheduledNotificationAsync(id: string) {
+    events.push('cancel');
+    if (failCancel) { failCancel = false; throw new Error('Simulated cancellation failure'); }
+    pending.delete(id);
+  },
   async scheduleNotificationAsync(request: { identifier: string; content: { title: string }; trigger: { date: Date } }) {
     events.push('schedule');
     if (failSchedule) { failSchedule = false; throw new Error('Simulated scheduling failure'); }
@@ -168,6 +177,63 @@ test('Alur catatan dan pengingat dengan SQLite nyata', async (t: import('node:te
       (NoteId, ReminderDateTime, IsActive, CreatedAt) VALUES (?, ?, 1, ?)`).run(id, future.toISOString(), future.toISOString()));
     assert.throws(() => db.prepare(`INSERT INTO Reminders
       (NoteId, ReminderDateTime, IsActive, CreatedAt) VALUES (999, ?, 1, ?)`).run(future.toISOString(), future.toISOString()));
+  });
+  await t.test('catatan tanpa isi dapat dibuat, diedit, dan dihapus tanpa pengingat', async () => {
+    const emptyId = await NoteService.save('Tanpa isi', '');
+    assert.equal((await NoteRepository.get(emptyId)).Content, '');
+    await NoteService.save('Judul disunting', '', emptyId);
+    assert.equal((await NoteRepository.get(emptyId)).Title, 'Judul disunting');
+    await NoteService.delete(emptyId);
+    await assert.rejects(NoteRepository.get(emptyId), /tidak ditemukan/);
+  });
+  await t.test('gagal membaca database memberi pesan Indonesia dan dapat dicoba lagi', async () => {
+    failRead = true;
+    await assert.rejects(NoteService.list(), /Catatan gagal dimuat/);
+    assert.equal((await NoteService.list()).length, 1);
+  });
+  await t.test('gagal menyimpan catatan tidak membuat record baru', async () => {
+    failWrite = true;
+    await assert.rejects(NoteService.save('Gagal simpan', ''), /gagal disimpan/);
+    assert.equal((await NoteService.list()).length, 1);
+  });
+  await t.test('gagal edit mempertahankan isi catatan dan mengembalikan isi notifikasi', async () => {
+    const before = await NoteRepository.get(id);
+    failWrite = true;
+    await assert.rejects(NoteService.save('Tidak boleh tersimpan', 'Isi gagal', id), /gagal diperbarui/);
+    assert.deepEqual(await NoteRepository.get(id), before);
+    assert.equal(pending.get(`inder-note-${id}`).content.title, before.Title);
+  });
+  await t.test('gagal menyelesaikan catatan tidak mengubah statusnya', async () => {
+    failWrite = true;
+    await assert.rejects(NoteService.complete(id, true), /gagal diperbarui/);
+    assert.equal((await NoteRepository.get(id)).IsCompleted, false);
+  });
+  await t.test('gagal hapus pengingat memulihkan jadwal tanpa kehilangan record', async () => {
+    const before = await ReminderRepository.get(id);
+    failWrite = true;
+    await assert.rejects(ReminderService.delete(id), /gagal dihapus/);
+    assert.deepEqual(await ReminderRepository.get(id), before);
+    assert.equal(pending.get(`inder-note-${id}`).trigger.date.toISOString(), before.ReminderDateTime);
+  });
+  await t.test('gagal hapus catatan menjaga catatan, pengingat, dan jadwal', async () => {
+    failWrite = true;
+    await assert.rejects(NoteService.delete(id), /gagal dihapus/);
+    assert.ok(await NoteRepository.get(id));
+    assert.ok(await ReminderRepository.get(id));
+    assert.equal(await NotificationService.isScheduled(id), true);
+  });
+  await t.test('gagal membatalkan notifikasi tidak menghapus pengingat', async () => {
+    failCancel = true;
+    await assert.rejects(ReminderService.delete(id), /gagal dibatalkan/);
+    assert.ok(await ReminderRepository.get(id));
+    assert.equal(await NotificationService.isScheduled(id), true);
+  });
+  await t.test('operasi pada catatan hilang ditolak tanpa menambah jadwal', async () => {
+    const count = pending.size;
+    await assert.rejects(NoteService.save('Tidak ada', '', 999), /tidak ditemukan/);
+    await assert.rejects(NoteService.complete(999, true), /tidak ditemukan/);
+    await assert.rejects(ReminderService.save(999, future), /tidak ditemukan/);
+    assert.equal(pending.size, count);
   });
   await t.test('hapus pengingat membatalkan notifikasi', async () => {
     await ReminderService.delete(id);
