@@ -10,9 +10,14 @@ export { getUpcomingNotes } from './ReminderRules';
 
 export const NoteService = {
   async list(): Promise<NoteWithReminder[]> {
-    const notes = await NoteRepository.list();
-    const reminders = await ReminderRepository.list();
-    return notes.map(note => ({ ...note, Reminder: reminders.find(item => item.NoteId === note.Id) ?? null }));
+    try {
+      const notes = await NoteRepository.list();
+      const reminders = await ReminderRepository.list();
+      const byNote = new Map(reminders.map(reminder => [reminder.NoteId, reminder]));
+      return notes.map(note => ({ ...note, Reminder: byNote.get(note.Id) ?? null }));
+    } catch {
+      throw new Error('Catatan gagal dimuat. Database belum dapat diakses. Silakan coba lagi.');
+    }
   },
   async save(title: string, content: string, id?: number) {
     const input = prepareNoteInput(title, content);
@@ -33,8 +38,12 @@ export const NoteService = {
       return id;
     } catch {
       if (active) {
-        await NotificationService.cancel(id);
-        await NotificationService.schedule(previous, new Date(reminder.ReminderDateTime));
+        try {
+          await NotificationService.cancel(id);
+          await NotificationService.schedule(previous, new Date(reminder.ReminderDateTime));
+        } catch {
+          throw new Error('Catatan gagal diperbarui dan jadwal gagal dipulihkan. Atur ulang pengingat catatan ini.');
+        }
       }
       throw new Error('Catatan gagal diperbarui.');
     }
@@ -52,7 +61,8 @@ export const NoteService = {
       await NoteRepository.delete(id);
     } catch {
       if (isUpcomingReminder(reminder)) {
-        await NotificationService.schedule(note, new Date(reminder.ReminderDateTime));
+        try { await NotificationService.schedule(note, new Date(reminder.ReminderDateTime)); }
+        catch { throw new Error('Catatan gagal dihapus dan jadwal gagal dipulihkan. Atur ulang pengingat catatan ini.'); }
       }
       throw new Error('Catatan gagal dihapus.');
     }

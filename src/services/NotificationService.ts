@@ -5,10 +5,14 @@ import { validateReminderDate } from '../utils/ValidationUtils';
 
 async function scheduleVerified(request: Notifications.NotificationRequestInput, date: Date) {
   validateReminderDate(date);
-  const identifier = await Notifications.scheduleNotificationAsync(request);
-  const scheduled = await Notifications.getAllScheduledNotificationsAsync();
-  if (date.getTime() > Date.now() && !scheduled.some(item => item.identifier === identifier)) {
-    throw new Error('Jadwal notifikasi tidak ditemukan pada perangkat. Coba simpan pengingat lagi.');
+  try {
+    const identifier = await Notifications.scheduleNotificationAsync(request);
+    const scheduled = await Notifications.getAllScheduledNotificationsAsync();
+    if (date.getTime() > Date.now() && !scheduled.some(item => item.identifier === identifier)) {
+      throw new Error('Jadwal tidak ditemukan.');
+    }
+  } catch {
+    throw new Error('Notifikasi gagal dijadwalkan atau diverifikasi. Coba simpan pengingat lagi.');
   }
 }
 
@@ -34,7 +38,11 @@ export const NotificationService = {
     return status.granted || status.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL;
   },
   async cancel(noteId: number) {
-    if (Platform.OS !== 'web') await Notifications.cancelScheduledNotificationAsync(`inder-note-${noteId}`);
+    try {
+      if (Platform.OS !== 'web') await Notifications.cancelScheduledNotificationAsync(`inder-note-${noteId}`);
+    } catch {
+      throw new Error('Notifikasi gagal dibatalkan. Pengingat belum dihapus. Silakan coba lagi.');
+    }
   },
   async schedule(note: Note, date: Date) {
     await scheduleVerified({

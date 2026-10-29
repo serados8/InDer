@@ -41,7 +41,8 @@ export const ReminderService = {
     try {
       await ReminderRepository.delete(noteId);
     } catch {
-      await restore(note, previous);
+      try { await restore(note, previous); }
+      catch { throw new Error('Pengingat gagal dihapus dan jadwal gagal dipulihkan. Atur ulang pengingat ini.'); }
       throw new Error('Pengingat gagal dihapus. Silakan coba lagi.');
     }
   },
