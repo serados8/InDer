@@ -1,0 +1,239 @@
+
+> inder@1.0.0 test:unit
+> node --experimental-strip-types --test tests/unit/*.test.ts tests/note-validation.test.ts tests/reminder-validation.test.ts
+
+TAP version 13
+# Subtest: N1: judul kosong dan whitespace ditolak dengan pesan Indonesia
+ok 1 - N1: judul kosong dan whitespace ditolak dengan pesan Indonesia
+  ---
+  duration_ms: 2.0664
+  type: 'test'
+  ...
+# Subtest: N2: judul valid termasuk karakter Indonesia, apostrof, dan emoji diterima
+ok 2 - N2: judul valid termasuk karakter Indonesia, apostrof, dan emoji diterima
+  ---
+  duration_ms: 0.3287
+  type: 'test'
+  ...
+# Subtest: R1: tanggal tidak valid ditolak
+ok 3 - R1: tanggal tidak valid ditolak
+  ---
+  duration_ms: 1.7047
+  type: 'test'
+  ...
+# Subtest: R2: waktu lampau dan tepat sekarang ditolak
+ok 4 - R2: waktu lampau dan tepat sekarang ditolak
+  ---
+  duration_ms: 0.2174
+  type: 'test'
+  ...
+# Subtest: R3: waktu mendatang diterima tanpa mengubah tanggal input
+ok 5 - R3: waktu mendatang diterima tanpa mengubah tanggal input
+  ---
+  duration_ms: 0.2541
+  type: 'test'
+  ...
+# Subtest: R4: zona waktu berbeda dengan momen yang sama menghasilkan validasi yang sama
+ok 6 - R4: zona waktu berbeda dengan momen yang sama menghasilkan validasi yang sama
+  ---
+  duration_ms: 0.2214
+  type: 'test'
+  ...
+# {"event":"MUTATION_FAILED","level":"warn","action":"show_error_and_retry"}
+# {"event":"REFRESH_FAILED","level":"warn","action":"reload_without_repeating_write"}
+# {"event":"MUTATION_FAILED","level":"warn","action":"show_error_and_retry"}
+# Subtest: aksi berhasil disimpan sebelum daftar dimuat ulang
+ok 7 - aksi berhasil disimpan sebelum daftar dimuat ulang
+  ---
+  duration_ms: 1.5115
+  type: 'test'
+  ...
+# Subtest: gagal menyimpan tidak menampilkan sukses atau memuat ulang
+ok 8 - gagal menyimpan tidak menampilkan sukses atau memuat ulang
+  ---
+  duration_ms: 0.8254
+  type: 'test'
+  ...
+# Subtest: gagal memuat ulang setelah simpan tidak mengulangi aksi dan tetap dilaporkan tersimpan
+ok 9 - gagal memuat ulang setelah simpan tidak mengulangi aksi dan tetap dilaporkan tersimpan
+  ---
+  duration_ms: 0.2764
+  type: 'test'
+  ...
+# Subtest: kegagalan tanpa objek Error memakai pesan Indonesia
+ok 10 - kegagalan tanpa objek Error memakai pesan Indonesia
+  ---
+  duration_ms: 0.207
+  type: 'test'
+  ...
+# Subtest: US3: semua mempertahankan seluruh catatan dan urutannya
+ok 11 - US3: semua mempertahankan seluruh catatan dan urutannya
+  ---
+  duration_ms: 1.5926
+  type: 'test'
+  ...
+# Subtest: US3: selesai dan belum selesai membagi catatan tanpa tumpang tindih
+ok 12 - US3: selesai dan belum selesai membagi catatan tanpa tumpang tindih
+  ---
+  duration_ms: 0.3085
+  type: 'test'
+  ...
+# Subtest: US3: memiliki reminder tetap mencakup pengingat lampau
+ok 13 - US3: memiliki reminder tetap mencakup pengingat lampau
+  ---
+  duration_ms: 0.2739
+  type: 'test'
+  ...
+# Subtest: US3: pencarian dan filter diterapkan bersama
+ok 14 - US3: pencarian dan filter diterapkan bersama
+  ---
+  duration_ms: 0.2505
+  type: 'test'
+  ...
+# Subtest: US3: filter tidak mengubah array/objek asal dan menangani daftar kosong
+ok 15 - US3: filter tidak mengubah array/objek asal dan menangani daftar kosong
+  ---
+  duration_ms: 0.4713
+  type: 'test'
+  ...
+# Subtest: US1: judul kosong/whitespace tidak dapat disimpan
+ok 16 - US1: judul kosong/whitespace tidak dapat disimpan
+  ---
+  duration_ms: 1.1997
+  type: 'test'
+  ...
+# Subtest: US1: isi opsional dan spasi luar dibuang
+ok 17 - US1: isi opsional dan spasi luar dibuang
+  ---
+  duration_ms: 0.8459
+  type: 'test'
+  ...
+# Subtest: US1: baris dan spasi di dalam isi tidak dirusak
+ok 18 - US1: baris dan spasi di dalam isi tidak dirusak
+  ---
+  duration_ms: 0.1503
+  type: 'test'
+  ...
+# Subtest: US1: Unicode ekuivalen dinormalisasi tanpa membuang emoji/apostrof
+ok 19 - US1: Unicode ekuivalen dinormalisasi tanpa membuang emoji/apostrof
+  ---
+  duration_ms: 0.1268
+  type: 'test'
+  ...
+# Subtest: US2: judul dan isi dapat dicari tanpa peka kapital
+ok 20 - US2: judul dan isi dapat dicari tanpa peka kapital
+  ---
+  duration_ms: 0.9418
+  type: 'test'
+  ...
+# Subtest: US2: query kosong atau whitespace cocok dengan setiap catatan
+ok 21 - US2: query kosong atau whitespace cocok dengan setiap catatan
+  ---
+  duration_ms: 0.3038
+  type: 'test'
+  ...
+# Subtest: US2: frasa yang hanya terbentuk dari sambungan judul dan isi tidak cocok
+ok 22 - US2: frasa yang hanya terbentuk dari sambungan judul dan isi tidak cocok
+  ---
+  duration_ms: 0.1853
+  type: 'test'
+  ...
+# Subtest: US2: Unicode dengan bentuk berbeda tetap cocok
+ok 23 - US2: Unicode dengan bentuk berbeda tetap cocok
+  ---
+  duration_ms: 0.229
+  type: 'test'
+  ...
+# Subtest: US2: simbol wildcard SQL diperlakukan sebagai karakter biasa
+ok 24 - US2: simbol wildcard SQL diperlakukan sebagai karakter biasa
+  ---
+  duration_ms: 0.3883
+  type: 'test'
+  ...
+# Subtest: US4: invalid, lampau, dan tepat sekarang ditolak
+ok 25 - US4: invalid, lampau, dan tepat sekarang ditolak
+  ---
+  duration_ms: 1.3522
+  type: 'test'
+  ...
+# Subtest: US4: satu milidetik di masa depan valid
+ok 26 - US4: satu milidetik di masa depan valid
+  ---
+  duration_ms: 0.26
+  type: 'test'
+  ...
+# Subtest: US4: tanpa pengingat, nonaktif, tanggal invalid, dan kedaluwarsa tidak dijadwalkan ulang
+ok 27 - US4: tanpa pengingat, nonaktif, tanggal invalid, dan kedaluwarsa tidak dijadwalkan ulang
+  ---
+  duration_ms: 1.263
+  type: 'test'
+  ...
+# Subtest: US4: pengingat aktif di masa depan layak dijadwalkan
+ok 28 - US4: pengingat aktif di masa depan layak dijadwalkan
+  ---
+  duration_ms: 0.1537
+  type: 'test'
+  ...
+# Subtest: US4: tanggal ISO dengan zona waktu berbeda tetap dibandingkan sebagai waktu absolut
+ok 29 - US4: tanggal ISO dengan zona waktu berbeda tetap dibandingkan sebagai waktu absolut
+  ---
+  duration_ms: 0.244
+  type: 'test'
+  ...
+# Subtest: log kegagalan tidak mengandung isi error, catatan, token, atau baris injeksi
+ok 30 - log kegagalan tidak mengandung isi error, catatan, token, atau baris injeksi
+  ---
+  duration_ms: 2.1603
+  type: 'test'
+  ...
+# Subtest: kode log di luar allowlist ditolak termasuk properti prototype
+ok 31 - kode log di luar allowlist ditolak termasuk properti prototype
+  ---
+  duration_ms: 0.2758
+  type: 'test'
+  ...
+# Subtest: kegagalan output log tidak menggagalkan penanganan mutasi
+ok 32 - kegagalan output log tidak menggagalkan penanganan mutasi
+  ---
+  duration_ms: 0.291
+  type: 'test'
+  ...
+# Subtest: US5: hanya pengingat aktif di masa depan yang muncul
+ok 33 - US5: hanya pengingat aktif di masa depan yang muncul
+  ---
+  duration_ms: 2.7975
+  type: 'test'
+  ...
+# Subtest: US5: urutkan berdasarkan waktu absolut, bukan urutan leksikografis ISO
+ok 34 - US5: urutkan berdasarkan waktu absolut, bukan urutan leksikografis ISO
+  ---
+  duration_ms: 0.1669
+  type: 'test'
+  ...
+# Subtest: US5: waktu sama diurutkan dengan Id agar hasil konsisten
+ok 35 - US5: waktu sama diurutkan dengan Id agar hasil konsisten
+  ---
+  duration_ms: 0.1023
+  type: 'test'
+  ...
+# Subtest: US5: menyelesaikan catatan tidak otomatis membatalkan pengingat
+ok 36 - US5: menyelesaikan catatan tidak otomatis membatalkan pengingat
+  ---
+  duration_ms: 0.2248
+  type: 'test'
+  ...
+# Subtest: US5: array sumber tidak berubah dan daftar kosong didukung
+ok 37 - US5: array sumber tidak berubah dan daftar kosong didukung
+  ---
+  duration_ms: 0.1937
+  type: 'test'
+  ...
+1..37
+# tests 37
+# suites 0
+# pass 37
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 556.7137

@@ -61,7 +61,7 @@ npm.cmd install
 npm.cmd start
 ```
 
-Pindai QR dengan Kamera iPhone dan buka di Expo Go yang kompatibel SDK 57. Gunakan Wi-Fi yang sama dengan Windows. Untuk pratinjau browser: `npm.cmd run web`; notifikasi native diuji pada iPhone.
+Pindai QR dengan Kamera iPhone dan buka di Expo Go yang kompatibel SDK 58. Gunakan Wi-Fi yang sama dengan Windows. Untuk pratinjau browser: `npm.cmd run web`; notifikasi native diuji pada iPhone.
 
 ## Dua commit yang diminta
 

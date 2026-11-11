@@ -5,7 +5,7 @@ InDer adalah MVP catatan pribadi dengan pengingat lokal. Data tersimpan di SQLit
 ## Persiapan
 
 - Node.js 22.19 atau versi 22 yang lebih baru, npm, dan Git.
-- iPhone dengan Expo Go yang mendukung Expo SDK 57.
+- iPhone dengan Expo Go yang mendukung Expo SDK 58.
 - Komputer dan iPhone pada Wi-Fi yang sama. Internet diperlukan saat instalasi dependensi.
 
 ## Instalasi dan menjalankan
