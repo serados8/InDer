@@ -32,7 +32,7 @@ npm.cmd install
 npm.cmd start
 ```
 
-Pindai QR dari Kamera iPhone untuk membuka proyek di Expo Go yang kompatibel SDK 57. Windows dan iPhone perlu terhubung ke jaringan yang sama saat memuat proyek. Panduan lengkap ada di README root.
+Pindai QR dari Kamera iPhone untuk membuka proyek di Expo Go yang kompatibel SDK 58. Windows dan iPhone perlu terhubung ke jaringan yang sama saat memuat proyek. Panduan lengkap ada di README root.
 
 ```powershell
 npm.cmd run lint

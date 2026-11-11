@@ -1,0 +1,404 @@
+
+> inder@1.0.0 verify
+> npm run typecheck && npm run lint && npm test
+
+
+> inder@1.0.0 typecheck
+> tsc --noEmit
+
+
+> inder@1.0.0 lint
+> expo lint
+
+
+> inder@1.0.0 test
+> node --experimental-strip-types --test tests/*.test.ts tests/unit/*.test.ts
+
+TAP version 13
+# (node:33424) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: security: payload SQL disimpan literal tanpa mengubah tabel atau catatan lain
+ok 1 - security: payload SQL disimpan literal tanpa mengubah tabel atau catatan lain
+  ---
+  duration_ms: 18.4253
+  type: 'test'
+  ...
+# Subtest: pemilih jam mempertahankan tanggal dan pemilih tanggal mempertahankan jam
+ok 2 - pemilih jam mempertahankan tanggal dan pemilih tanggal mempertahankan jam
+  ---
+  duration_ms: 0.2696
+  type: 'test'
+  ...
+# Subtest: Alur catatan dan pengingat dengan SQLite nyata
+    # Subtest: validasi judul dan pembuatan catatan
+    ok 1 - validasi judul dan pembuatan catatan
+      ---
+      duration_ms: 1.5168
+      type: 'test'
+      ...
+    # Subtest: pencarian judul, isi, dan filter
+    ok 2 - pencarian judul, isi, dan filter
+      ---
+      duration_ms: 0.5845
+      type: 'test'
+      ...
+    # Subtest: waktu lampau dan penolakan izin tidak membuat pengingat
+    ok 3 - waktu lampau dan penolakan izin tidak membuat pengingat
+      ---
+      duration_ms: 0.55
+      type: 'test'
+      ...
+    # Subtest: membuat dan mengganti satu pengingat
+    ok 4 - membuat dan mengganti satu pengingat
+      ---
+      duration_ms: 3.5792
+      type: 'test'
+      ...
+    # Subtest: jadwal yang tidak masuk antrean tidak dianggap berhasil
+    ok 5 - jadwal yang tidak masuk antrean tidak dianggap berhasil
+      ---
+      duration_ms: 0.5265
+      type: 'test'
+      ...
+    # Subtest: uji 10 detik memakai jadwal terpisah dari pengingat catatan
+    ok 6 - uji 10 detik memakai jadwal terpisah dari pengingat catatan
+      ---
+      duration_ms: 0.3447
+      type: 'test'
+      ...
+    # Subtest: kegagalan penjadwalan dan penyimpanan memulihkan pengingat lama
+    ok 7 - kegagalan penjadwalan dan penyimpanan memulihkan pengingat lama
+      ---
+      duration_ms: 1.0958
+      type: 'test'
+      ...
+    # Subtest: edit catatan memperbarui isi notifikasi dan status dapat dibalik
+    ok 8 - edit catatan memperbarui isi notifikasi dan status dapat dibalik
+      ---
+      duration_ms: 5.4604
+      type: 'test'
+      ...
+    # Subtest: catatan dan pengingat bertahan setelah database dibuka ulang
+    ok 9 - catatan dan pengingat bertahan setelah database dibuka ulang
+      ---
+      duration_ms: 4.5044
+      type: 'test'
+      ...
+    # Subtest: foreign key dan batas satu pengingat ditegakkan
+    ok 10 - foreign key dan batas satu pengingat ditegakkan
+      ---
+      duration_ms: 0.4352
+      type: 'test'
+      ...
+    # Subtest: catatan tanpa isi dapat dibuat, diedit, dan dihapus tanpa pengingat
+    ok 11 - catatan tanpa isi dapat dibuat, diedit, dan dihapus tanpa pengingat
+      ---
+      duration_ms: 5.0477
+      type: 'test'
+      ...
+    # Subtest: gagal membaca database memberi pesan Indonesia dan dapat dicoba lagi
+    ok 12 - gagal membaca database memberi pesan Indonesia dan dapat dicoba lagi
+      ---
+      duration_ms: 0.3238
+      type: 'test'
+      ...
+    # Subtest: gagal menyimpan catatan tidak membuat record baru
+    ok 13 - gagal menyimpan catatan tidak membuat record baru
+      ---
+      duration_ms: 0.3204
+      type: 'test'
+      ...
+    # Subtest: gagal edit mempertahankan isi catatan dan mengembalikan isi notifikasi
+    ok 14 - gagal edit mempertahankan isi catatan dan mengembalikan isi notifikasi
+      ---
+      duration_ms: 0.4224
+      type: 'test'
+      ...
+    # Subtest: gagal menyelesaikan catatan tidak mengubah statusnya
+    ok 15 - gagal menyelesaikan catatan tidak mengubah statusnya
+      ---
+      duration_ms: 0.4072
+      type: 'test'
+      ...
+    # Subtest: gagal hapus pengingat memulihkan jadwal tanpa kehilangan record
+    ok 16 - gagal hapus pengingat memulihkan jadwal tanpa kehilangan record
+      ---
+      duration_ms: 0.5786
+      type: 'test'
+      ...
+    # Subtest: gagal hapus catatan menjaga catatan, pengingat, dan jadwal
+    ok 17 - gagal hapus catatan menjaga catatan, pengingat, dan jadwal
+      ---
+      duration_ms: 0.3762
+      type: 'test'
+      ...
+    # Subtest: gagal membatalkan notifikasi tidak menghapus pengingat
+    ok 18 - gagal membatalkan notifikasi tidak menghapus pengingat
+      ---
+      duration_ms: 0.309
+      type: 'test'
+      ...
+    # Subtest: operasi pada catatan hilang ditolak tanpa menambah jadwal
+    ok 19 - operasi pada catatan hilang ditolak tanpa menambah jadwal
+      ---
+      duration_ms: 0.2754
+      type: 'test'
+      ...
+    # Subtest: hapus pengingat membatalkan notifikasi
+    ok 20 - hapus pengingat membatalkan notifikasi
+      ---
+      duration_ms: 2.5329
+      type: 'test'
+      ...
+    # Subtest: hapus catatan menghapus pengingat dan notifikasi
+    ok 21 - hapus catatan menghapus pengingat dan notifikasi
+      ---
+      duration_ms: 2.8281
+      type: 'test'
+      ...
+    1..21
+ok 3 - Alur catatan dan pengingat dengan SQLite nyata
+  ---
+  duration_ms: 34.37
+  type: 'test'
+  ...
+# Subtest: security: demo hanya melayani artefak, menolak traversal, dan memasang header SQLite
+ok 4 - security: demo hanya melayani artefak, menolak traversal, dan memasang header SQLite
+  ---
+  duration_ms: 119.7526
+  type: 'test'
+  ...
+# Subtest: N1: judul kosong dan whitespace ditolak dengan pesan Indonesia
+ok 5 - N1: judul kosong dan whitespace ditolak dengan pesan Indonesia
+  ---
+  duration_ms: 2.2293
+  type: 'test'
+  ...
+# Subtest: N2: judul valid termasuk karakter Indonesia, apostrof, dan emoji diterima
+ok 6 - N2: judul valid termasuk karakter Indonesia, apostrof, dan emoji diterima
+  ---
+  duration_ms: 0.4145
+  type: 'test'
+  ...
+# Subtest: R1: tanggal tidak valid ditolak
+ok 7 - R1: tanggal tidak valid ditolak
+  ---
+  duration_ms: 2.4671
+  type: 'test'
+  ...
+# Subtest: R2: waktu lampau dan tepat sekarang ditolak
+ok 8 - R2: waktu lampau dan tepat sekarang ditolak
+  ---
+  duration_ms: 0.3766
+  type: 'test'
+  ...
+# Subtest: R3: waktu mendatang diterima tanpa mengubah tanggal input
+ok 9 - R3: waktu mendatang diterima tanpa mengubah tanggal input
+  ---
+  duration_ms: 0.4273
+  type: 'test'
+  ...
+# Subtest: R4: zona waktu berbeda dengan momen yang sama menghasilkan validasi yang sama
+ok 10 - R4: zona waktu berbeda dengan momen yang sama menghasilkan validasi yang sama
+  ---
+  duration_ms: 0.2972
+  type: 'test'
+  ...
+# {"event":"MUTATION_FAILED","level":"warn","action":"show_error_and_retry"}
+# {"event":"REFRESH_FAILED","level":"warn","action":"reload_without_repeating_write"}
+# {"event":"MUTATION_FAILED","level":"warn","action":"show_error_and_retry"}
+# Subtest: aksi berhasil disimpan sebelum daftar dimuat ulang
+ok 11 - aksi berhasil disimpan sebelum daftar dimuat ulang
+  ---
+  duration_ms: 1.3467
+  type: 'test'
+  ...
+# Subtest: gagal menyimpan tidak menampilkan sukses atau memuat ulang
+ok 12 - gagal menyimpan tidak menampilkan sukses atau memuat ulang
+  ---
+  duration_ms: 0.7374
+  type: 'test'
+  ...
+# Subtest: gagal memuat ulang setelah simpan tidak mengulangi aksi dan tetap dilaporkan tersimpan
+ok 13 - gagal memuat ulang setelah simpan tidak mengulangi aksi dan tetap dilaporkan tersimpan
+  ---
+  duration_ms: 0.2528
+  type: 'test'
+  ...
+# Subtest: kegagalan tanpa objek Error memakai pesan Indonesia
+ok 14 - kegagalan tanpa objek Error memakai pesan Indonesia
+  ---
+  duration_ms: 0.2054
+  type: 'test'
+  ...
+# Subtest: US3: semua mempertahankan seluruh catatan dan urutannya
+ok 15 - US3: semua mempertahankan seluruh catatan dan urutannya
+  ---
+  duration_ms: 2.3755
+  type: 'test'
+  ...
+# Subtest: US3: selesai dan belum selesai membagi catatan tanpa tumpang tindih
+ok 16 - US3: selesai dan belum selesai membagi catatan tanpa tumpang tindih
+  ---
+  duration_ms: 0.2045
+  type: 'test'
+  ...
+# Subtest: US3: memiliki reminder tetap mencakup pengingat lampau
+ok 17 - US3: memiliki reminder tetap mencakup pengingat lampau
+  ---
+  duration_ms: 0.1225
+  type: 'test'
+  ...
+# Subtest: US3: pencarian dan filter diterapkan bersama
+ok 18 - US3: pencarian dan filter diterapkan bersama
+  ---
+  duration_ms: 0.1731
+  type: 'test'
+  ...
+# Subtest: US3: filter tidak mengubah array/objek asal dan menangani daftar kosong
+ok 19 - US3: filter tidak mengubah array/objek asal dan menangani daftar kosong
+  ---
+  duration_ms: 0.2676
+  type: 'test'
+  ...
+# Subtest: US1: judul kosong/whitespace tidak dapat disimpan
+ok 20 - US1: judul kosong/whitespace tidak dapat disimpan
+  ---
+  duration_ms: 1.3222
+  type: 'test'
+  ...
+# Subtest: US1: isi opsional dan spasi luar dibuang
+ok 21 - US1: isi opsional dan spasi luar dibuang
+  ---
+  duration_ms: 0.8526
+  type: 'test'
+  ...
+# Subtest: US1: baris dan spasi di dalam isi tidak dirusak
+ok 22 - US1: baris dan spasi di dalam isi tidak dirusak
+  ---
+  duration_ms: 0.1646
+  type: 'test'
+  ...
+# Subtest: US1: Unicode ekuivalen dinormalisasi tanpa membuang emoji/apostrof
+ok 23 - US1: Unicode ekuivalen dinormalisasi tanpa membuang emoji/apostrof
+  ---
+  duration_ms: 0.1319
+  type: 'test'
+  ...
+# Subtest: US2: judul dan isi dapat dicari tanpa peka kapital
+ok 24 - US2: judul dan isi dapat dicari tanpa peka kapital
+  ---
+  duration_ms: 0.9981
+  type: 'test'
+  ...
+# Subtest: US2: query kosong atau whitespace cocok dengan setiap catatan
+ok 25 - US2: query kosong atau whitespace cocok dengan setiap catatan
+  ---
+  duration_ms: 0.1411
+  type: 'test'
+  ...
+# Subtest: US2: frasa yang hanya terbentuk dari sambungan judul dan isi tidak cocok
+ok 26 - US2: frasa yang hanya terbentuk dari sambungan judul dan isi tidak cocok
+  ---
+  duration_ms: 0.1126
+  type: 'test'
+  ...
+# Subtest: US2: Unicode dengan bentuk berbeda tetap cocok
+ok 27 - US2: Unicode dengan bentuk berbeda tetap cocok
+  ---
+  duration_ms: 0.1311
+  type: 'test'
+  ...
+# Subtest: US2: simbol wildcard SQL diperlakukan sebagai karakter biasa
+ok 28 - US2: simbol wildcard SQL diperlakukan sebagai karakter biasa
+  ---
+  duration_ms: 0.1939
+  type: 'test'
+  ...
+# Subtest: US4: invalid, lampau, dan tepat sekarang ditolak
+ok 29 - US4: invalid, lampau, dan tepat sekarang ditolak
+  ---
+  duration_ms: 1.3927
+  type: 'test'
+  ...
+# Subtest: US4: satu milidetik di masa depan valid
+ok 30 - US4: satu milidetik di masa depan valid
+  ---
+  duration_ms: 0.3609
+  type: 'test'
+  ...
+# Subtest: US4: tanpa pengingat, nonaktif, tanggal invalid, dan kedaluwarsa tidak dijadwalkan ulang
+ok 31 - US4: tanpa pengingat, nonaktif, tanggal invalid, dan kedaluwarsa tidak dijadwalkan ulang
+  ---
+  duration_ms: 1.1579
+  type: 'test'
+  ...
+# Subtest: US4: pengingat aktif di masa depan layak dijadwalkan
+ok 32 - US4: pengingat aktif di masa depan layak dijadwalkan
+  ---
+  duration_ms: 0.1799
+  type: 'test'
+  ...
+# Subtest: US4: tanggal ISO dengan zona waktu berbeda tetap dibandingkan sebagai waktu absolut
+ok 33 - US4: tanggal ISO dengan zona waktu berbeda tetap dibandingkan sebagai waktu absolut
+  ---
+  duration_ms: 0.264
+  type: 'test'
+  ...
+# Subtest: log kegagalan tidak mengandung isi error, catatan, token, atau baris injeksi
+ok 34 - log kegagalan tidak mengandung isi error, catatan, token, atau baris injeksi
+  ---
+  duration_ms: 2.7662
+  type: 'test'
+  ...
+# Subtest: kode log di luar allowlist ditolak termasuk properti prototype
+ok 35 - kode log di luar allowlist ditolak termasuk properti prototype
+  ---
+  duration_ms: 0.3659
+  type: 'test'
+  ...
+# Subtest: kegagalan output log tidak menggagalkan penanganan mutasi
+ok 36 - kegagalan output log tidak menggagalkan penanganan mutasi
+  ---
+  duration_ms: 0.3712
+  type: 'test'
+  ...
+# Subtest: US5: hanya pengingat aktif di masa depan yang muncul
+ok 37 - US5: hanya pengingat aktif di masa depan yang muncul
+  ---
+  duration_ms: 2.9367
+  type: 'test'
+  ...
+# Subtest: US5: urutkan berdasarkan waktu absolut, bukan urutan leksikografis ISO
+ok 38 - US5: urutkan berdasarkan waktu absolut, bukan urutan leksikografis ISO
+  ---
+  duration_ms: 0.2014
+  type: 'test'
+  ...
+# Subtest: US5: waktu sama diurutkan dengan Id agar hasil konsisten
+ok 39 - US5: waktu sama diurutkan dengan Id agar hasil konsisten
+  ---
+  duration_ms: 0.1278
+  type: 'test'
+  ...
+# Subtest: US5: menyelesaikan catatan tidak otomatis membatalkan pengingat
+ok 40 - US5: menyelesaikan catatan tidak otomatis membatalkan pengingat
+  ---
+  duration_ms: 0.2204
+  type: 'test'
+  ...
+# Subtest: US5: array sumber tidak berubah dan daftar kosong didukung
+ok 41 - US5: array sumber tidak berubah dan daftar kosong didukung
+  ---
+  duration_ms: 0.1638
+  type: 'test'
+  ...
+1..41
+# tests 62
+# suites 0
+# pass 62
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 674.7104

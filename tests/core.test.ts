@@ -78,6 +78,18 @@ const { NoteRepository } = require('../src/database/NoteRepository.ts');
 const { NotificationService } = require('../src/services/NotificationService.ts');
 const { mergePickerDate } = require('../src/utils/DateUtils.ts');
 
+test('security: payload SQL disimpan literal tanpa mengubah tabel atau catatan lain', async () => {
+  const payload = "'); DROP TABLE Notes; --";
+  const id = await NoteService.save(payload, '<script>alert("x")</script>');
+  assert.equal((await NoteRepository.get(id)).Title, payload);
+  assert.equal((await NoteRepository.get(id)).Content, '<script>alert("x")</script>');
+  await NoteService.save('aman', payload, id);
+  assert.equal((await NoteRepository.get(id)).Content, payload);
+  await assert.rejects(() => NoteRepository.get('1 OR 1=1'), /tidak ditemukan/);
+  assert.ok((await NoteRepository.list()).some((note: { Id: number }) => note.Id === id));
+  await NoteService.delete(id);
+});
+
 test('pemilih jam mempertahankan tanggal dan pemilih tanggal mempertahankan jam', () => {
   const current = new Date(2026, 9, 20, 15, 30, 45);
   const selected = new Date(2026, 9, 10, 9, 10);

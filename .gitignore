@@ -32,6 +32,13 @@ yarn-error.*
 
 # local env files
 .env*.local
+.env
+.env.*
+!.env.example
+
+# Reproducibility workspace and generated demo packages
+.verification/
+artifacts/
 
 # typescript
 *.tsbuildinfo
